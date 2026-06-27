@@ -1,41 +1,22 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-
-import { defaultTheme as theme } from './styles/themes';
-
-function HomePage() {
-  return (
-    <Box
-      sx={{
-        p: 4,
-        textAlign: 'center',
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
-    >
-      <Typography variant="h3" gutterBottom>
-        Starter Kit
-      </Typography>
-      <Typography color="text.secondary">Your design system foundation</Typography>
-    </Box>
-  );
-}
+import Home from './components/Home';
+import Question from './components/Question';
+import PickCard from './components/PickCard';
+import LoadingRitual from './components/LoadingRitual';
+import Result from './components/Result';
+import './App.css';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<HomePage />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="/question" element={<Question />} />
+        <Route path="/pick" element={<PickCard />} />
+        <Route path="/loading" element={<LoadingRitual />} />
+        <Route path="/result" element={<Result />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
