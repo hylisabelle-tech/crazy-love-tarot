@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -30,6 +30,7 @@ const sampleText = `🌑 그는 나와 데이트했던 순간들을 생각하나
 export default function Result() {
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useMediaQuery('(max-width: 1439px)');
   const { question } = location.state || { question: "질문이 없습니다." };
 
   const [typedText, setTypedText] = useState('');
@@ -65,39 +66,64 @@ export default function Result() {
     <Box className="scroll-container" onScroll={handleScroll} ref={containerRef} sx={{ position: 'relative' }}>
       
       {/* Sticky Navigation for Section 1 */}
-      <Box sx={{ position: 'fixed', top: 30, left: 30, right: 30, display: 'flex', justifyContent: 'space-between', zIndex: 100 }}>
+      <Box sx={{ position: 'fixed', top: isMobile ? 20 : 30, left: isMobile ? 20 : 30, right: isMobile ? 20 : 30, display: 'flex', justifyContent: 'space-between', zIndex: 100 }}>
         <motion.img 
           src="/btn-home.png" 
           alt="Home" 
           onClick={() => navigate('/')} 
           whileHover={{ scale: 1.1 }} 
-          style={{ width: '40px', cursor: 'pointer' }} 
+          style={{ width: isMobile ? '30px' : '40px', cursor: 'pointer' }} 
         />
         <Box sx={{ display: 'flex', gap: 2 }}>
           <motion.img 
             src="/btn-email.png" 
             alt="Email" 
             whileHover={{ scale: 1.1 }} 
-            style={{ width: '40px', cursor: 'pointer' }} 
+            style={{ width: isMobile ? '30px' : '40px', cursor: 'pointer' }} 
             onClick={() => alert("이메일 발송 준비중입니다.")}
           />
           <motion.img 
             src="/btn-share.png" 
             alt="Share" 
             whileHover={{ scale: 1.1 }} 
-            style={{ width: '40px', cursor: 'pointer' }} 
+            style={{ width: isMobile ? '30px' : '40px', cursor: 'pointer' }} 
             onClick={() => alert("공유하기 준비중입니다.")}
           />
         </Box>
       </Box>
 
       {/* Section 1: The Cards */}
-      <Box className="scroll-section" sx={{ bgcolor: '#ffffff' }}>
-        <img src="/img_devil.png" alt="Devil" style={{ width: '100px', marginBottom: '20px' }} />
+      <Box className="scroll-section" sx={{ bgcolor: '#ffffff', flexDirection: 'column', gap: isMobile ? '20px' : '40px', pt: isMobile ? '60px' : '0px' }}>
         
-        <Box sx={{ display: 'flex', gap: 4, mb: 10 }}>
+        {/* Category Image */}
+        <img 
+          src="/img_devil.png" 
+          alt="Category" 
+          style={{ 
+            width: isMobile ? '60px' : '106px', 
+            height: isMobile ? '100px' : '180px',
+            objectFit: 'contain'
+          }} 
+        />
+        
+        {/* User Question */}
+        <Typography 
+          sx={{ 
+            fontSize: isMobile ? '16px' : '24px', 
+            color: '#000',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            px: '20px',
+            wordBreak: 'keep-all'
+          }}
+        >
+          {question}
+        </Typography>
+        
+        {/* The 3 Cards */}
+        <Box sx={{ display: 'flex', gap: isMobile ? 2 : 4, mb: isMobile ? 5 : 10, mt: isMobile ? 2 : 4 }}>
           {sampleCards.map((src, idx) => (
-            <ParallaxCard key={idx} src={src} delay={idx * 0.3} />
+            <ParallaxCard key={idx} src={src} delay={idx * 0.3} isMobile={isMobile} />
           ))}
         </Box>
 
@@ -107,14 +133,19 @@ export default function Result() {
           alt="Scroll Down"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          style={{ position: 'absolute', bottom: '50px', height: '80px' }}
+          style={{ 
+            position: 'absolute', 
+            bottom: isMobile ? '20px' : '50px', 
+            height: isMobile ? '60px' : '80px',
+            objectFit: 'contain'
+          }}
         />
       </Box>
 
       {/* Section 2: The Reading */}
-      <Box className="scroll-section" sx={{ flexDirection: 'row', bgcolor: '#1a1a1a' }}>
-        {/* Video Left */}
-        <Box sx={{ width: '50%', height: '100%' }}>
+      <Box className="scroll-section" sx={{ flexDirection: isMobile ? 'column' : 'row', bgcolor: '#1a1a1a' }}>
+        {/* Video Left (Top on Mobile) */}
+        <Box sx={{ width: isMobile ? '100%' : '50%', height: isMobile ? '40%' : '100%' }}>
           <video 
             src="/videos/movie.mp4" 
             autoPlay 
@@ -124,11 +155,39 @@ export default function Result() {
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </Box>
-        {/* Text Right */}
-        <Box sx={{ width: '50%', height: '100%', p: 8, overflowY: 'auto' }}>
-          <Typography variant="body1" sx={{ color: '#fff', fontSize: '1.4rem', whiteSpace: 'pre-wrap', lineHeight: 1.8, fontFamily: 'inherit' }}>
+        {/* Text Right (Bottom on Mobile) */}
+        <Box sx={{ width: isMobile ? '100%' : '50%', height: isMobile ? '60%' : '100%', p: isMobile ? 4 : 8, overflowY: 'auto' }}>
+          <Typography variant="body1" sx={{ color: '#fff', fontSize: isMobile ? '1rem' : '1.4rem', whiteSpace: 'pre-wrap', lineHeight: 1.8, fontFamily: 'inherit' }}>
             {typedText}
           </Typography>
+          
+          {/* Return to Home Button */}
+          {typedText.length === sampleText.length && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6, pb: 4 }}>
+              <motion.div
+                onClick={() => {
+                  window.scrollTo(0, 0);
+                  navigate('/');
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 42, 85, 0.1)' }}
+                whileTap={{ scale: 0.95 }}
+                style={{ 
+                  padding: '16px 40px', 
+                  border: '2px solid #ff2a55', 
+                  borderRadius: '50px', 
+                  color: '#ff2a55', 
+                  cursor: 'pointer',
+                  fontSize: isMobile ? '1.1rem' : '1.3rem',
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}
+              >
+                처음으로 돌아가기
+              </motion.div>
+            </Box>
+          )}
         </Box>
       </Box>
 
@@ -137,11 +196,12 @@ export default function Result() {
 }
 
 // Simple Parallax Card Component responding to mouse movement
-function ParallaxCard({ src, delay }) {
+function ParallaxCard({ src, delay, isMobile }) {
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
 
   const handleMouseMove = (e) => {
+    if (isMobile) return; // Disable hover parallax on mobile
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
@@ -150,6 +210,7 @@ function ParallaxCard({ src, delay }) {
   };
 
   const handleMouseLeave = () => {
+    if (isMobile) return;
     setRotateX(0);
     setRotateY(0);
   };
@@ -163,8 +224,8 @@ function ParallaxCard({ src, delay }) {
       onMouseLeave={handleMouseLeave}
       style={{
         perspective: 1000,
-        width: '240px',
-        height: '360px',
+        width: isMobile ? '110px' : '260px',
+        height: isMobile ? '150px' : '360px',
       }}
     >
       <motion.img 
