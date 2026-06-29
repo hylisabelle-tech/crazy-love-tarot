@@ -238,11 +238,24 @@ function Question() {
             flexShrink: 0, 
             cursor: question.trim() ? 'pointer' : 'default',
             pointerEvents: question.trim() ? 'auto' : 'none',
+            position: 'relative',
             opacity: question.trim() ? 1 : 0.5,
-            transition: 'opacity 0.2s ease-in-out'
+            transition: 'opacity 0.2s'
           }}
         >
-          <img src="/btn-go.png" alt="Submit" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          {/* Base Black Image */}
+          <img src="/btn-go.png" alt="Submit" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }} />
+          
+          {/* Blinking Red Image Overlay */}
+          {question.trim().length > 0 && (
+            <motion.img 
+              src="/btn-go_red.png" 
+              alt="Submit Ready" 
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }} 
+            />
+          )}
         </Box>
       </Box>
 
